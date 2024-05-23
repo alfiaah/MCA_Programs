@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Armstrong Number Checker</title>
+</head>
+<body>
+    <h2>Armstrong Number Checker</h2>
+    <form method="post">
+        <label for="number">Enter a number:</label>
+        <input type="number" id="number" name="number">
+        <button type="submit">Check</button>
+    </form>
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Retrieve the number from the form
+        $number = $_POST["number"];
+
+        // Function to check if a number is an Armstrong number
+        function isArmstrong($num) {
+            $originalNumber = $num;
+            $numDigits = strlen((string)$num);
+            $sum = 0;
+
+            // Calculate the sum of each digit raised to the power of the number of digits
+            while ($num > 0) {
+                $digit = $num % 10;
+                $sum += pow($digit, $numDigits);
+                $num = (int)($num / 10);
+            }
+
+            // Check if the sum is equal to the original number
+            if ($sum == $originalNumber) {
+                return true; // It's an Armstrong number
+            } else {
+                return false; // It's not an Armstrong number
+            }
+        }
+
+        // Check if the entered number is an Armstrong number
+        if (isArmstrong($number)) {
+            echo "<p>$number is an Armstrong number.</p>";
+        } else {
+            echo "<p>$number is not an Armstrong number.</p>";
+        }
+    }
+    ?>
+</body>
+</html>

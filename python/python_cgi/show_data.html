@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Show Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .edit-btn, .delete-btn {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+        }
+        .edit-btn:hover, .delete-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Entries</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Happy</th>
+            <th>Sad</th>
+            <th>Actions</th>
+        </tr>
+        <!-- Data rows will be dynamically added here -->
+    </table>
+    <script>
+        // Function to fetch data from server and populate the table
+        function fetchDataAndPopulateTable() {
+            fetch('fetch_data.py')  // Replace with your actual CGI script URL
+                .then(response => response.json())
+                .then(data => {
+                    populateTable(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Function to dynamically populate the table with data
+        function populateTable(data) {
+            var tableBody = document.createElement('tbody');
+
+            data.forEach(function(row) {
+                var tr = document.createElement('tr');
+
+                var idCell = document.createElement('td');
+                idCell.textContent = row[0];
+                tr.appendChild(idCell);
+
+                var nameCell = document.createElement('td');
+                nameCell.textContent = row[1];
+                tr.appendChild(nameCell);
+
+                var happyCell = document.createElement('td');
+                happyCell.textContent = row[2] ? 'Yes' : 'No';
+                tr.appendChild(happyCell);
+
+                var sadCell = document.createElement('td');
+                sadCell.textContent = row[3] ? 'Yes' : 'No';
+                tr.appendChild(sadCell);
+
+                var actionsCell = document.createElement('td');
+
+                var editLink = document.createElement('a');
+                editLink.href = 'edit_data.py?id=' + row[0];
+                editLink.className = 'edit-btn';
+                editLink.textContent = 'Edit';
+                actionsCell.appendChild(editLink);
+
+                actionsCell.appendChild(document.createTextNode(' | '));
+
+                var deleteLink = document.createElement('a');
+                deleteLink.href = 'delete_data.py?id=' + row[0];
+                deleteLink.className = 'delete-btn';
+                deleteLink.textContent = 'Delete';
+                actionsCell.appendChild(deleteLink);
+
+                tr.appendChild(actionsCell);
+                tableBody.appendChild(tr);
+            });
+
+            var existingTBody = document.querySelector('table tbody');
+            if (existingTBody) {
+                existingTBody.remove(); // Remove existing tbody if any
+            }
+            document.querySelector('table').appendChild(tableBody);
+        }
+
+        // Call fetchDataAndPopulateTable on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchDataAndPopulateTable();
+        });
+    </script>
+</body>
+</html>
